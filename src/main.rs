@@ -1,3 +1,3 @@
 fn main() {
-    println!("Hello, world!");
+    hw1::display_rule110_n_times("*.*..*..", 10);
 }

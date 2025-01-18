@@ -44,6 +44,40 @@ fn u8_to_cellular_automaton_string(mut bits: u8) -> String {
     char_array.iter().collect()
 }
 
+fn cellular_automaton_string_to_u8(word: &str) -> u8 {
+    let mut output: u8 = 0;
+
+    for letter in word.chars().rev() {
+        let tmp = match letter {
+            '*' => 1,
+            '.' => 0,
+            _ => panic!("String can only contain * and .")
+        };
+
+        output |= tmp;
+        output = output.rotate_right(1);
+    }
+
+    output
+}
+
+fn next_cellular_automaton_string(word: &str) -> String {
+    let bits = cellular_automaton_string_to_u8(word);
+    let bits_110 = apply_rule110_over_eight_bits(bits);
+
+    u8_to_cellular_automaton_string(bits_110)
+}
+
+pub fn display_rule110_n_times(start: &str, n: i32) {
+    println!("{start}");
+    let mut next = next_cellular_automaton_string(start); // don't really need to do this but I like it
+
+    for _ in 0..n - 1{
+        println!("{next}");
+        next = next_cellular_automaton_string(&next);
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -100,6 +134,30 @@ mod tests {
         let expected = "***.**.*";
 
         assert_eq!(u8_to_cellular_automaton_string(test), expected)
+    }
+
+    #[test]
+    fn string_to_one_sixty_four() {
+        let test = "*.*..*..";
+        let expected: u8 = 164;
+
+        assert_eq!(cellular_automaton_string_to_u8(test), expected);
+    }
+
+    #[test]
+    fn string_to_two_thirty_seven() {
+        let test = "***.**.*";
+        let expected: u8 = 237;
+
+        assert_eq!(cellular_automaton_string_to_u8(test), expected);
+    }
+
+    #[test]
+    fn get_next_cellular_string_164() {
+        let test = "*.*..*..";
+        let expected = "***.**.*";
+
+        assert_eq!(next_cellular_automaton_string(test), expected);
     }
 }
 
