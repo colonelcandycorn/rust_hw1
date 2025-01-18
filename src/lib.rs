@@ -26,6 +26,24 @@ fn apply_rule110_over_eight_bits(mut bits: u8) -> u8 {
     output.rotate_left(1)
 }
 
+fn u8_to_cellular_automaton_string(mut bits: u8) -> String {
+    let mask: u8 = 0b1;
+    let mut char_array: [char; 8] = [' '; 8];
+
+    for index in (0..8).rev() {
+        let tmp = bits & mask;
+        let conv = match tmp {
+            0 => '.',
+            1 => '*',
+            _ => unreachable!("When adding with 1 it is impossible to be anything else")
+        };
+        char_array[index] = conv;
+        bits = bits.rotate_right(1)
+    }
+
+    char_array.iter().collect()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -66,6 +84,22 @@ mod tests {
         let expected: u8 = 0b0011_1111;
 
         assert_eq!(apply_rule110_over_eight_bits(test), expected);
+    }
+
+    #[test]
+    fn one_sixty_four_should_output_correct_string() {
+        let test: u8 = 164;
+        let expected = "*.*..*..";
+
+        assert_eq!(u8_to_cellular_automaton_string(test), expected);
+    }
+
+    #[test]
+    fn two_thirty_seven_should_output_correct_string() {
+        let test: u8 = 237;
+        let expected = "***.**.*";
+
+        assert_eq!(u8_to_cellular_automaton_string(test), expected)
     }
 }
 
