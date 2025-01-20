@@ -1,3 +1,7 @@
+/// Uses rule 110 of elementary cellular automaton over 3 bits.
+/// Specifically uses the first 3 bits of an u8 to output 1 or 0.
+/// # Panics
+/// Will panic if any bit besides the first 3 is set
 fn rule110(bits: u8) -> u8 {
     match bits {
         0b111 => 0,
@@ -12,6 +16,9 @@ fn rule110(bits: u8) -> u8 {
     }
 }
 
+/// Yields the next u8 after applying rule 110
+/// Loops through the provided u8 three bits at a time to get corresponding bit
+/// in next u8.
 fn apply_rule110_over_eight_bits(mut bits: u8) -> u8 {
     let mask: u8 = 0b111;
     let mut output = 0;
@@ -26,6 +33,13 @@ fn apply_rule110_over_eight_bits(mut bits: u8) -> u8 {
     output.rotate_left(1)
 }
 
+/// Our homework assignment requires 1's to correspond to '*'
+/// and 0 to correspond to '.'
+/// This function just converts an u8 to a string that matches
+/// that format.
+/// # Panics
+/// Has an unreachable block in our match statement. Because we are & with 1, the
+/// only possible outcome is 1 or 0.
 fn u8_to_cellular_automaton_string(mut bits: u8) -> String {
     let mask: u8 = 0b1;
     let mut char_array: [char; 8] = [' '; 8];
@@ -35,7 +49,7 @@ fn u8_to_cellular_automaton_string(mut bits: u8) -> String {
         let conv = match tmp {
             0 => '.',
             1 => '*',
-            _ => unreachable!("When adding with 1 it is impossible to be anything else")
+            _ => unreachable!("When adding with 1 it is impossible to be anything else"),
         };
         char_array[index] = conv;
         bits = bits.rotate_right(1)
@@ -44,6 +58,10 @@ fn u8_to_cellular_automaton_string(mut bits: u8) -> String {
     char_array.iter().collect()
 }
 
+/// In our assignment 1's correspond to '*' and 0's to '.'
+/// This function takes an input string of that type and yields the appropriate u8
+/// # Panics
+/// Will panic if the string contains any character other than '*' or '.'
 fn cellular_automaton_string_to_u8(word: &str) -> u8 {
     let mut output: u8 = 0;
 
@@ -51,7 +69,7 @@ fn cellular_automaton_string_to_u8(word: &str) -> u8 {
         let tmp = match letter {
             '*' => 1,
             '.' => 0,
-            _ => panic!("String can only contain * and .")
+            _ => panic!("String can only contain * and ."),
         };
 
         output |= tmp;
@@ -61,6 +79,8 @@ fn cellular_automaton_string_to_u8(word: &str) -> u8 {
     output
 }
 
+/// Given a string matching our homework's specifications this will apply rule 110
+/// and give you a new string that is next in the sequence.
 fn next_cellular_automaton_string(word: &str) -> String {
     let bits = cellular_automaton_string_to_u8(word);
     let bits_110 = apply_rule110_over_eight_bits(bits);
@@ -68,11 +88,20 @@ fn next_cellular_automaton_string(word: &str) -> String {
     u8_to_cellular_automaton_string(bits_110)
 }
 
+/// Given a starting string that is 8 characters long and only contains '*' or '.', this function
+/// will apply rule 110 of elementary cellular automaton n - 1 times, displaying each string
+/// (including the first one) produced by applying the rule. I debated whether I should call this
+/// n - 1, but I feel like it is clear enough
+/// # Panics
+/// If start contains a character other than '*' or '.' or if string is greater than 8 characters.
 pub fn display_rule110_n_times(start: &str, n: i32) {
+    if start.len() > 8 {
+        panic!("Only valid on strings of length 8")
+    }
     println!("{start}");
     let mut next = next_cellular_automaton_string(start); // don't really need to do this but I like it
 
-    for _ in 0..n - 1{
+    for _ in 0..n - 1 {
         println!("{next}");
         next = next_cellular_automaton_string(&next);
     }

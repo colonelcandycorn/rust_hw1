@@ -20,10 +20,10 @@ The first transformation of "\*.\*..\*.." should be "\*\*\*.\*\*.\*" for example
 1. **Prerequisites**:
     * Rust and cargo installed
 2. **Clone the Repository**:
-    ```
-    git clone https://github.com/colonelcandycorn/rust_hw1.git
-    cd rust_hw1
-    ```
+   ```
+   git clone https://github.com/colonelcandycorn/rust_hw1.git
+   cd rust_hw1
+   ```
 3. **Build the Project**:
     ```
     cargo build
